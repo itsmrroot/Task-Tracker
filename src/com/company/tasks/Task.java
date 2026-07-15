@@ -10,6 +10,7 @@ public class Task {
     public Task(int id, String description, String createdAt){
         this.id = id;
         this.description = description;
+        this.createdAt = createdAt;
         this.updatedAt = createdAt;
         this.status=TaskStatus.TODO;
     }
