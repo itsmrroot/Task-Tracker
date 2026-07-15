@@ -4,8 +4,15 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
+        if (args.length == 0) {
+            printHelp();
+            return;
+        }
 
         switch (args[0]) {
+            case "help":
+                printHelp();
+                break;
             case "add":
                 manager.addTask(args[1]);
                 break;
@@ -31,5 +38,22 @@ public class Main {
 
 
 
+    }
+    private static void printHelp() {
+        System.out.println("Task Tracker CLI");
+        System.out.println("================");
+        System.out.println("Usage: task <command> [arguments]");
+        System.out.println();
+        System.out.println("Commands:");
+        System.out.println("  add <description>           Add a new task");
+        System.out.println("  update <id> <description>   Update a task");
+        System.out.println("  delete <id>                 Delete a task");
+        System.out.println("  mark-in-progress <id>       Mark task as in progress");
+        System.out.println("  mark-done <id>              Mark task as done");
+        System.out.println("  list                        List all tasks");
+        System.out.println("  list todo                   List todo tasks");
+        System.out.println("  list in-progress            List in-progress tasks");
+        System.out.println("  list done                   List done tasks");
+        System.out.println("  help                        Show this help message");
     }
 }
