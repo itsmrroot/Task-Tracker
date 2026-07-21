@@ -27,13 +27,12 @@ public class Storage {
 
             sb.append("{");
             sb.append("\"id\":" + task.getId() + ",");
-            sb.append("\"description\":\"" + task.getDescription() + "\",");
+            sb.append("\"description\":\"" + escape(task.getDescription()) + "\",");
             sb.append("\"status\":\"" + task.getStatus() + "\",");
-            sb.append("\"createdAt\":\"" + task.getCreatedAt() + "\",");
-            sb.append("\"updatedAt\":\"" + task.getUpdatedAt() + "\"");
+            sb.append("\"createdAt\":\"" + escape(task.getCreatedAt()) + "\",");
+            sb.append("\"updatedAt\":\"" + escape(task.getUpdatedAt()) + "\"");
             sb.append("}");
             if (i < tasks.size() - 1) sb.append(",");
-
         }
         sb.append("]");
 
@@ -44,6 +43,13 @@ public class Storage {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String escape(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n");
     }
 
     public List<Task> loadTasks() {
@@ -101,7 +107,24 @@ public class Storage {
     private String extractValue(String block, String key) {
         String search = "\"" + key + "\":\"";
         int start = block.indexOf(search) + search.length();
-        int end = block.indexOf("\"", start);
-        return block.substring(start, end);
+        int end = start;
+
+        // Scan forward, skipping over escaped quotes (\") until we hit a real closing quote
+        while (end < block.length()) {
+            if (block.charAt(end) == '"' && block.charAt(end - 1) != '\\') {
+                break;
+            }
+            end++;
+        }
+
+        String raw = block.substring(start, end);
+        return unescape(raw);
+    }
+
+    private String unescape(String value) {
+        return value
+                .replace("\\\"", "\"")
+                .replace("\\n", "\n")
+                .replace("\\\\", "\\");
     }
 }
