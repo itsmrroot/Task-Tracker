@@ -6,56 +6,58 @@ import java.util.List;
 
 public class Storage {
 
+    private final String filename;
 
+    public Storage() {
+        this("tasks.json");
+    }
+
+    public Storage(String filename) {
+        this.filename = filename;
+    }
 
     public void saveTasks(List<Task> tasks) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
-        for(int i = 0; i < tasks.size(); i++) {
+        for (int i = 0; i < tasks.size(); i++) {
 
             Task task = tasks.get(i);
 
-                sb.append("{");
-                sb.append("\"id\":" + task.getId() + ",");
-                sb.append("\"description\":\"" + task.getDescription() + "\",");
-                sb.append("\"status\":\"" + task.getStatus() + "\",");
-                sb.append("\"createdAt\":\"" + task.getCreatedAt() + "\",");
-                sb.append("\"updatedAt\":\"" + task.getUpdatedAt() + "\"");
-                sb.append("}");
-                if (i < tasks.size() - 1) sb.append(",");
-
-
+            sb.append("{");
+            sb.append("\"id\":" + task.getId() + ",");
+            sb.append("\"description\":\"" + task.getDescription() + "\",");
+            sb.append("\"status\":\"" + task.getStatus() + "\",");
+            sb.append("\"createdAt\":\"" + task.getCreatedAt() + "\",");
+            sb.append("\"updatedAt\":\"" + task.getUpdatedAt() + "\"");
+            sb.append("}");
+            if (i < tasks.size() - 1) sb.append(",");
 
         }
         sb.append("]");
 
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("tasks.json"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
             bw.write(sb.toString());
             bw.close();
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    public List<Task>  loadTasks() {
+    public List<Task> loadTasks() {
 
-        File file = new File("tasks.json");
+        File file = new File(filename);
         if (!file.exists()) return new ArrayList<>();
 
         try {
-            BufferedReader br   = new BufferedReader(new FileReader("tasks.json"));
+            BufferedReader br = new BufferedReader(new FileReader(filename));
             StringBuilder sb = new StringBuilder();
             String line;
 
             while ((line = br.readLine()) != null) {
                 sb.append(line);
-
             }
             if (sb.length() != 0) {
                 String json = sb.toString();
@@ -82,22 +84,18 @@ public class Storage {
                     task.setUpdatedAt(updatedAt);
                     tasks.add(task);
 
-                    start  = json.indexOf("{", end);
-
+                    start = json.indexOf("{", end);
                 }
                 return tasks;
 
-            }else {
+            } else {
                 return new ArrayList<>();
             }
 
-
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ArrayList<>() ;
-
+        return new ArrayList<>();
     }
 
     private String extractValue(String block, String key) {
@@ -106,5 +104,4 @@ public class Storage {
         int end = block.indexOf("\"", start);
         return block.substring(start, end);
     }
-
 }
