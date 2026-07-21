@@ -1,5 +1,7 @@
 # Task Tracker CLI
 
+[![CI](https://github.com/itsmrroot/Task-Tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/itsmrroot/Task-Tracker/actions/workflows/ci.yml)
+
 A lightweight command-line task manager built in Java. Add, update, and track your tasks from the terminal — no internet, no account, no fluff. Tasks are saved locally in a `tasks.json` file.
 
 ## Features
@@ -8,7 +10,7 @@ A lightweight command-line task manager built in Java. Add, update, and track yo
 - Mark tasks as **in-progress** or **done**
 - Filter tasks by status
 - Persistent storage via a local JSON file
-- Zero external dependencies — pure Java
+- Zero external dependencies at runtime — pure Java
 
 ## Installation
 
@@ -89,36 +91,47 @@ task delete 2
 
 ## Storage
 
-Tasks are saved in a `tasks.json` file in the directory where you run the command. The file is created automatically on first use.
+Tasks are saved in a `tasks.json` file in the directory where you run the command. The file is created automatically on first use. Descriptions containing quote characters (`"`) are properly escaped, so special characters in task text won't corrupt the file.
 
 ## Project Structure
 
 ```
-src/com/company/tasks/
-├── Main.java          # Entry point, CLI argument parsing
-├── Task.java          # Task data model
-├── TaskStatus.java    # Enum: TODO, IN_PROGRESS, DONE
-├── TaskManager.java   # Business logic
-└── Storage.java       # Read/write tasks.json
+src/
+├── main/java/com/company/tasks/
+│   ├── Main.java          # Entry point, CLI argument parsing
+│   ├── Task.java          # Task data model
+│   ├── TaskStatus.java    # Enum: TODO, IN_PROGRESS, DONE
+│   ├── TaskManager.java   # Business logic
+│   └── Storage.java       # Read/write tasks.json
+└── test/java/com/company/tasks/
+    ├── TaskTest.java
+    └── StorageTest.java
 ```
-
 ## Building from Source
 
-1. Clone the repo:
+Requires [Maven](https://maven.apache.org/) in addition to Java 11+.
+
 ```bash
-git clone https://github.com/your-username/Task-Tracker.git
+git clone https://github.com/itsmrroot/Task-Tracker.git
 cd Task-Tracker
+mvn package
 ```
 
-2. Open in IntelliJ IDEA
-
-3. Build the JAR: **Build → Build Artifacts → task-tracker → Build**
-
-4. The JAR will be at:
+The runnable JAR will be at:
 ```
-out/artifacts/task_tracker/task-tracker.jar
+target/task-tracker.jar
+```
+Run it directly:
+```bash
+java -jar target/task-tracker.jar help
+```
+
+## Running Tests
+
+```bash
+mvn test
 ```
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
